@@ -1,3 +1,17 @@
+### Installation Command
+
+Right-click inside the folder → Click "Open in Terminal"
+
+OR open Command Prompt or PowerShell, then run:
+
+Run this in your terminal :
+
+```
+pip install -r requirements.txt
+
+```
+
+
 ### Install MiKTeX (Recommended for Windows):
 
 Download from: https://miktex.org/download
