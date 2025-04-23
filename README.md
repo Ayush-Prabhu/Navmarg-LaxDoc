@@ -34,3 +34,18 @@ If not, add the MiKTeX `bin` directory to your PATH manually. Example:
 C:\Program Files\MiKTeX\miktex\bin\x64\
 
 ```
+### Windows EXE compilation
+
+1. Download the `zip` file, `extract` it to your desktop ( not inside any other folder )
+2. Open your terminal App as `administrator` -> Right-click your terminal app (CMD, PowerShell, or VS Code terminal)
+3. Navigate to that folder: `cd desktop`  ->  `ls`, then `cd foldername`
+4. Use commnad
+```
+pyinstaller main.py --onefile
+```
+**or**
+```
+pyinstaller main.py --distpath build\dist --workpath build\build --specpath build\spec
+```
+6. Do not close the PowerShell window until the message **'Building EXE from EXE-00.toc completed successfully.'** is displayed
+7. Follow for more: `https://github.com/Abhijeetbyte/Python-Script-to-Application`
