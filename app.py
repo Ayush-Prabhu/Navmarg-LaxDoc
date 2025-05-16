@@ -5,6 +5,7 @@ import subprocess
 import customtkinter as ctk
 import shutil
 from TexSoup import TexSoup
+import tkinter as tk
 from tkinter import messagebox, filedialog, simpledialog
 from datetime import datetime
 
@@ -217,6 +218,61 @@ def generate_unique_template_index(name, csv_file=TEMPLATES_CSV):
     return code
 
 
+
+def ask_large_text(title="Input", prompt="Enter text:", initial_text="", width=60, height=5):
+    """Safe large input window that sanitizes newline characters for CSV compatibility."""
+    result = {"text": None}
+
+    def on_ok():
+        raw_text = text_widget.get("1.0", "end-1c")
+        sanitized = raw_text.replace("\n", " ").replace("\r", " ").strip()
+        result["text"] = sanitized
+        dialog.destroy()
+
+    dialog = tk.Toplevel()
+    dialog.title(title)
+    dialog.geometry("600x200")
+    dialog.resizable(False, False)
+    dialog.grab_set()
+
+    tk.Label(dialog, text=prompt, anchor="w").pack(pady=5, padx=10, anchor="w")
+
+    text_widget = tk.Text(dialog, wrap="word", width=width, height=height)
+    text_widget.insert("1.0", initial_text)
+    text_widget.pack(padx=10, pady=5, fill="both", expand=True)
+
+    tk.Button(dialog, text="OK", command=on_ok).pack(pady=10)
+
+    dialog.wait_window()
+    return result["text"]
+
+def ask_wide_entry(title="Input", prompt="Enter value:", initial_value="", width=60):
+    """Custom dialog for single-line wide input (e.g., for template name)."""
+    result = {"value": None}
+
+    def on_ok():
+        val = entry.get().strip()
+        result["value"] = val
+        dialog.destroy()
+
+    dialog = tk.Toplevel()
+    dialog.title(title)
+    dialog.geometry("500x120")
+    dialog.resizable(False, False)
+    dialog.grab_set()
+
+    tk.Label(dialog, text=prompt, anchor="w").pack(pady=10, padx=15, anchor="w")
+
+    entry = tk.Entry(dialog, width=width)
+    entry.insert(0, initial_value)
+    entry.pack(padx=15, pady=5, fill="x")
+
+    tk.Button(dialog, text="OK", command=on_ok).pack(pady=10)
+
+    dialog.wait_window()
+    return result["value"]
+
+
 class LaxDocApp(ctk.CTk):
     def __init__(self):
         super().__init__()
@@ -354,19 +410,29 @@ class ImportTemplateFrame(ctk.CTkFrame):
                 placeholders = parse_placeholders(content)
                 
                 if validate_latex(content, placeholders):
-                    template_name = simpledialog.askstring(
-                        "Template Name",
-                        "Enter template name (without extension):"
+                    # template_name = simpledialog.askstring(
+                    #     "Template Name",
+                    #     "Enter template name (without extension):"
+                    # )
+                    
+                    template_name = ask_wide_entry(
+                        title="Template Name",
+                        prompt="Enter template name (without extension):"
                     )
+
 
                     if not template_name or not is_valid_filename(template_name):
                         messagebox.showerror("Error", "Invalid or empty template name")
                         return
                     
-                    short_desc = simpledialog.askstring(
-                        "Template Description",
-                        "Enter short description:",
-                        parent=self
+                    # short_desc = simpledialog.askstring(
+                    #     "Template Description",
+                    #     "Enter short description:",
+                    #     parent=self
+                    # )
+                    short_desc = ask_large_text(
+                        title="Template Description",
+                        prompt="Enter a short description of the template:"
                     )
 
                     if not short_desc:
@@ -553,10 +619,16 @@ class DocumentGenerationFrame(ctk.CTkFrame):
             return
 
         try:
-            doc_description = simpledialog.askstring(
-                "Document Description",
-                "Enter a short description for the generated document:"
+            # doc_description = simpledialog.askstring(
+            #     "Document Description",
+            #     "Enter a short description for the generated document:"
+            # )
+
+            doc_description = ask_large_text(
+                title="Document Description",
+                prompt="Enter a short description for the generated document:"
             )
+
             if not doc_description:
                 messagebox.showerror("Error", "Description cannot be empty!")
                 return
