@@ -359,6 +359,7 @@ class LaxDocApp(ctk.CTk):
         self.generate_frame.pack_forget() 
         self.search_temp_frame.pack_forget()
         self.search_frame.pack(fill="both", expand=True, padx=CTK_FRAME_PAD, pady=CTK_FRAME_PAD)
+        self.search_frame.load_template_types()
         
     def show_search_temp_frame(self):
         self.generate_frame.pack_forget()
